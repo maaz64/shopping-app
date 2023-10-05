@@ -1,24 +1,30 @@
-import './Navbar.css';
-import { useContext } from 'react';
+// importing firebase database methods
 import { useAuthState } from "react-firebase-hooks/auth";
 import { signOut } from "firebase/auth";
 import { auth } from '../../firebaseInit';
-import { Link, Outlet,  useNavigate } from 'react-router-dom';
-// import userContext from '../../userContext';
 
+// importing react router dom 
+import { Link, Outlet,  useNavigate } from 'react-router-dom';
+
+// importing Navbar styling
+import './Navbar.css';
+
+// importing react toast
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Navbar = () => {
 
-   // const { user } = useContext(userContext);
+   // use this to navigate to diffrent pages and components
    const navigate = useNavigate();
+
+   // to check whether user is authorised or not
    const [userAuth] = useAuthState(auth);
 
+   // function to handle logout
    const handleLogout = () => {
       signOut(auth).then(() => {
          navigate("/");
-         // console.log("Logged out successfully")
          toast.success("Logged Out!!!");
       }).catch((error) => {
          
@@ -39,6 +45,7 @@ const Navbar = () => {
                         <img className="img-style" src="https://cdn-icons-png.flaticon.com/128/609/609803.png" alt="Home" />
                         <span>Home</span></Link>
                   </li>
+                  {/* if user is authorised then we will show the cart and order page to the user */}
                   {userAuth ? <>
                      <li>
                         <Link to='myorder' className='nav-link'>
@@ -51,6 +58,7 @@ const Navbar = () => {
                            <span>Cart</span></Link>
                      </li></> : null}
                   <li>
+                     {/* conditional rendering of logout or signin option in navbar */}
                      {userAuth ? <Link className="nav-link" onClick={handleLogout}>
                         <img className="img-style" src="https://cdn-icons-png.flaticon.com/128/1828/1828490.png" alt="Logout" />
                         <span>Log out</span>

@@ -1,18 +1,35 @@
+// importing required hooks
 import React, { useContext, useEffect, useState } from 'react'
+
+// importing userContext
 import userContext from '../../userContext';
+
+// importing react router dom hooks
 import { useNavigate } from 'react-router-dom';
+
+// importing firebase database methods
 import { useAuthState } from "react-firebase-hooks/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db, auth } from '../../firebaseInit';
+
+// importing styles
 import './Order.css';
-// import { order } from '../../data';
 
 export default function Order() {
+
+  // using this hook to navigate to diffrent pages
   const navigate = useNavigate();
+
+  // destructuring required props from userContext
   const { user } = useContext(userContext);
+
+  // creating state to store the users order details
   const [order, setOrder] = useState([]);
+
+  // creating user Authorised state
   const [userAuth] = useAuthState(auth);
 
+  // This useEffect will fetch all orders placed by a user if the user is authorised otherwise it will redirect the user to sign in page as the component did mount
   useEffect(() => {
     if (!userAuth) {
       navigate("/signin");
@@ -29,6 +46,8 @@ export default function Order() {
     getAllOrders();
   }, [])
 
+
+  // this functiom will sum up the total price of a order
   const getTotalPrice = (array) => {
 
     const totalPriceToPay = array.reduce((accumulator, product) => {

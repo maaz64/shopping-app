@@ -1,21 +1,35 @@
+// importing required hooks
 import React, { useContext, useEffect } from 'react'
+
+// importing react router dom hooks
 import { useNavigate } from 'react-router-dom';
+
+// importing userContext
 import userContext from '../../userContext';
+
+// importing firebase database methods
 import { useAuthState } from "react-firebase-hooks/auth";
 import { doc, getDoc,updateDoc } from "firebase/firestore";
 import {db,auth} from '../../firebaseInit';
+
+// importing styles
 import './Cart.css'
 
+// importing react toast
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
 export default function Cart() {
-  
+
+    // using this hook to navigate to diffrent pages
     const navigate = useNavigate();
+
+    // destructuring required props from userContext
     const {user,cartProducts,setTotalPrice, totalPrice,setCartProducts, order,setOrder} = useContext(userContext);
     const [userAuth] = useAuthState(auth);
 
+    // This useEffect will check whether the user is logged in or not..if user is not present it will redirect it to signin page
     useEffect(()=>{
 
       if (!userAuth){
@@ -23,6 +37,7 @@ export default function Cart() {
         return;
       }
         
+      // This useEffect will fetch the products from database that logged in user has added in its cart
       const getCartData = async()=>{
          
             const docRef = doc(db, "users", user);
@@ -41,7 +56,7 @@ export default function Cart() {
     },[]);
 
     
-
+    // function to increase the product count that user already added inside the cart
     const handleInc = async(id)=>{
       const index = cartProducts.findIndex(cartProduct => cartProduct.id === id);
       cartProducts[index].quantity++;
@@ -52,7 +67,7 @@ export default function Cart() {
       });
     }
 
-
+    // function to decrease the product count that user already added inside the cart...if the count is zero it will remove the product from the cart
     const handleDec = async(id)=>{
       const index = cartProducts.findIndex(cartProduct => cartProduct.id === id);
       setTotalPrice(totalPrice - cartProducts[index].price);
@@ -68,6 +83,7 @@ export default function Cart() {
       });
     }
 
+    // function to remove the product from the cart
     const handleRemove = async(id)=>{
       const index = cartProducts.findIndex(cartProduct => cartProduct.id === id);
       setTotalPrice(totalPrice - (cartProducts[index].quantity * cartProducts[index].price))
@@ -80,13 +96,13 @@ export default function Cart() {
       toast.success("Product Removed Successfully!!!");
     }
 
+    // function to order the products that are inside the cart
     const handlePurchase  = async()=>{
       let currentDate = new Date().toJSON().slice(0, 10);
       setOrder([{ord_Prd:[...cartProducts], date:currentDate}, ...order]);
       setCartProducts([]);
 
-      navigate("/myorder");
-      toast.success("Order Successfull!!!");
+      toast.success("Order Successfull");
       await updateDoc(doc(db, "users", user), {
         cart: [],
         order:[{ord_Prd:[...cartProducts], date:currentDate},...order]

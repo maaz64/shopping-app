@@ -1,21 +1,37 @@
+// importing required hooks
 import { useContext, useEffect, useState } from 'react';
+
+// importing react router dom hooks
 import { Link, useNavigate } from 'react-router-dom';
+
+// importing firebase authentication methods
 import { signInWithEmailAndPassword } from 'firebase/auth';
-// import { doc, onSnapshot } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
+
+// importing firebase database methods
 import { auth } from '../../firebaseInit';
 import userContext from "../../userContext";
+
+// importing styles
 import "./SignIn.css"
 
+// importing react toast
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
 const SignIn = () => {
+
+     // destructuring required props from userContext
     const { setUser} = useContext(userContext);
+
+    // using this hook to navigate to diffrent pages
     const navigate = useNavigate();
+
+    // creating state to store the user email and passwords
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    // creating user Authorised state
     const [userAuth] = useAuthState(auth);
 
     useEffect(() => {
@@ -23,6 +39,7 @@ const SignIn = () => {
         if (userAuth) navigate("/");
     }, [userAuth]);
 
+    // function to handle the login of user using signInWithEmailAndPassword method proivded by the firebase 
     const handleLogin = (e) => {
         e.preventDefault();
         signInWithEmailAndPassword(auth, email, password)

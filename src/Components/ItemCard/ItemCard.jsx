@@ -1,6 +1,9 @@
 import React from 'react';
+
+// importing ItemCard styles
 import './ItemCard.css'
 
+// creating the ItemCard component
 export default function ItemCard({product, addToCart}) {
 
   return (
