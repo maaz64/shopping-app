@@ -1,8 +1,11 @@
 // importing required hooks
-import { useContext, useEffect, useState } from 'react';
+import {  useEffect, useState } from 'react';
 
 // importing react router dom hooks
 import { Link, useNavigate } from 'react-router-dom';
+
+// importing useSelector provided by react-redux
+import {  useDispatch } from 'react-redux';
 
 // importing firebase authentication methods
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -10,7 +13,6 @@ import { useAuthState } from "react-firebase-hooks/auth";
 
 // importing firebase database methods
 import { auth } from '../../firebaseInit';
-import userContext from "../../userContext";
 
 // importing styles
 import "./SignIn.css"
@@ -19,11 +21,15 @@ import "./SignIn.css"
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// importing user actions
+import { actions } from '../../redux/reducers/userReducer';
+
 
 const SignIn = () => {
 
-     // destructuring required props from userContext
-    const { setUser} = useContext(userContext);
+    // destructuring the actions of user
+    const {setUser} = actions;
+    const dispatch = useDispatch();
 
     // using this hook to navigate to diffrent pages
     const navigate = useNavigate();
@@ -45,7 +51,7 @@ const SignIn = () => {
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
-                setUser(user.uid);
+                dispatch(setUser(user.uid));
                 toast.success("Login successfully");
 
                 navigate("/")

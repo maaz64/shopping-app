@@ -1,11 +1,8 @@
 // importing required hooks
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // importing styles for the component
 import './Home.css';
-
-// importing userContext 
-import userContext from "../../userContext";
 
 // importing firebase database methods
 import { onAuthStateChanged } from "firebase/auth";
@@ -19,6 +16,15 @@ import ItemCard from "../ItemCard/ItemCard";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// importing hooks from react-redux
+import { useDispatch, useSelector } from "react-redux";
+
+// importing user selector and user actions
+import { userSelector, actions } from "../../redux/reducers/userReducer";
+
+// importing cart selector and cart actions
+import { cartSelector, addProductToCart } from "../../redux/reducers/cartReducer";
+
 // creating categories array to further use it to create a list of filter 
 const CATEGORIES = [
     "men's clothing",
@@ -30,8 +36,18 @@ const CATEGORIES = [
 
 const Home = () => {
 
-    // destructuring required props from userContext
-    const { user, setUser, setCartProducts, cartProducts } = useContext(userContext);
+    // destructuring the cartProducts from cartSelector
+    const { cartProducts } = useSelector(cartSelector)
+
+    // destructuring the user from userSelector
+    const { user } = useSelector(userSelector);
+
+    // destructuring user actions
+    const { setUser } = actions;
+
+    // using this hook to dispatch actions
+    const dispatch = useDispatch();
+
 
     // creating state productList to store the products to show on homepage
     const [productList, setProductList] = useState([]);
@@ -50,16 +66,16 @@ const Home = () => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 const uid = user.uid;
-                setUser(uid);
-                
+                dispatch(setUser(uid));
+
             } else {
-                setUser(null);
+                dispatch(setUser(null));
             }
         });
     }, [user]);
-    
 
-    // This useEffect will fetch the data from database as the component did mount and set it to productList state
+
+    // This useEffect will fetch the product data from database as the component did mount and set it to productList state
     useEffect(() => {
         async function getProducts() {
             onSnapshot(collection(db, "productList"), (snapShot) => {
@@ -80,38 +96,44 @@ const Home = () => {
     }, []);
 
     // This useEffect will set searchItems whenever the filterTags state changes..filterTags changes whenever user checked or unchecked the checbox input.
-    useEffect(()=>{
-        
-        const filteredProducts = productList.filter((product)=>{
+    useEffect(() => {
+
+        const filteredProducts = productList.filter((product) => {
             return filterTags.includes(product.category)
         })
         setSearchItem([...filteredProducts]);
 
-    },[filterTags]);
+    }, [filterTags]);
 
     // This useEffect will set searchItems whenever the priceRange state changes..
-    useEffect(()=>{
+    useEffect(() => {
         let products = productList;
-        if(searchItems.length !==0)
-        {
+        if (searchItems.length !== 0) {
             products = searchItems;
         }
-        const filteredProducts = products.filter((product)=>{
+        const filteredProducts = products.filter((product) => {
             return product.price <= priceRange;
         })
         setSearchItem([...filteredProducts]);
-    },[priceRange])
-    
+    }, [priceRange])
+
 
     // function to add the product inside cart
     const addToCart = async (product) => {
+
+        if (!user) {
+            toast.success("Signin first to add products into cart");
+            return;
+
+        }
 
         // finding the index to check if the product is already existed in cart.
         const index = cartProducts.findIndex(cartProduct => cartProduct.id === product.id);
 
         // if indes is -1 it means product is not inside the cart. Then we add it in the cart with quantity value 1.
         if (index === -1) {
-            setCartProducts([...cartProducts, { ...product, quantity: 1 }]);
+            const updatedCart = { ...product, quantity: 1 };
+            dispatch(addProductToCart(updatedCart));
             await updateDoc(doc(db, "users", user), {
                 cart: [...cartProducts, { ...product, quantity: 1 }],
 
@@ -122,14 +144,7 @@ const Home = () => {
 
         // if index is not -1 it means product is already there then we just increase the quantity of the product
         else {
-            cartProducts[index].quantity++;
-            setCartProducts(cartProducts);
-            await updateDoc(doc(db, "users", user), {
-                cart: cartProducts,
-                
-            });
-            toast.success("Product Count Increases");
-
+            toast.success("Product already added in cart");
 
         }
 
@@ -158,15 +173,15 @@ const Home = () => {
                 filterTags.filter((filterTag) => filterTag !== event.target.value)
             )
         }
-            
+
     }
 
     // function to set the priceRange
-    const filterByPrice = (e)=>{
+    const filterByPrice = (e) => {
         setPriceRange(e.target.value);
     }
 
- 
+
 
     return (
         <>
@@ -176,7 +191,7 @@ const Home = () => {
                     <form>
                         <label htmlFor="price">price : {priceRange}</label>
                         <h2>Category</h2>
-                        <input type="range" name="price" id="price" className='priceInput' min="100" max="50000" step="10" value={priceRange} onChange={filterByPrice}/>
+                        <input type="range" name="price" id="price" className='priceInput' min="100" max="50000" step="10" value={priceRange} onChange={filterByPrice} />
                         <div className="category">
 
                             {CATEGORIES.map(category => (

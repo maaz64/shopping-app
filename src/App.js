@@ -1,5 +1,5 @@
 // importing required hooks
-import { useState} from 'react';
+// import { useState} from 'react';
 
 // importing router
 import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } from 'react-router-dom';
@@ -12,21 +12,20 @@ import SignUp from './Components/SignUp/SignUp';
 import Cart from './Components/Cart/Cart';
 import Order from './Components/Order/Order';
 
-// importing userContext 
-import userContext from './userContext';
+// importing the provider from react-redux
+import { Provider } from 'react-redux';
+
+// importing store
+import { store } from './store';
 
 // importing react toast
-
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function App() {
-  const [user, setUser] = useState(null);
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [cartProducts, setCartProducts] = useState([]);
-  const [order,setOrder] = useState([]);
 
-  // creting routes for app
+function App() {
+
+  // creating routes for app
   const routes = createRoutesFromElements(
     <Route path="/" element={<Navbar/>}>
       <Route index element={<Home/>}/>
@@ -42,13 +41,10 @@ function App() {
     <>
     {/* component for notification */}
     <ToastContainer/>
-
-    {/* providing value to the userContext */}
-    <userContext.Provider value={{user,setUser, cartProducts,setCartProducts, totalPrice,setTotalPrice, order,setOrder}}>
-
       {/* providing routes to the app */}
-    <RouterProvider router={router}/>
-    </userContext.Provider>
+    <Provider store={store}>
+        <RouterProvider router={router}/>
+    </Provider>
     </>
   );
 }

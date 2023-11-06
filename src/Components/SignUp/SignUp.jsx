@@ -45,7 +45,7 @@ const SignUp = ()=>{
           const user = userCredential.user;
           navigate('/signin');
           toast.success("Sign Up Successfull");
-          console.log(user.uid);
+        //   console.log(user.uid);
           
           await setDoc(doc(db, "users", user.uid), {
               name,

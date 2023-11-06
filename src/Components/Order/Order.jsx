@@ -1,8 +1,5 @@
 // importing required hooks
-import React, { useContext, useEffect, useState } from 'react'
-
-// importing userContext
-import userContext from '../../userContext';
+import React, { useEffect } from 'react'
 
 // importing react router dom hooks
 import { useNavigate } from 'react-router-dom';
@@ -14,17 +11,23 @@ import { db, auth } from '../../firebaseInit';
 
 // importing styles
 import './Order.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { userSelector } from '../../redux/reducers/userReducer';
+import { orderSelector, getAllOrder } from '../../redux/reducers/orderReducer';
 
 export default function Order() {
 
   // using this hook to navigate to diffrent pages
   const navigate = useNavigate();
 
-  // destructuring required props from userContext
-  const { user } = useContext(userContext);
+  // using this hook to dispatch actions
+  const dispatch = useDispatch();
 
-  // creating state to store the users order details
-  const [order, setOrder] = useState([]);
+  // destructuring the user from userSelector
+  const {user} = useSelector(userSelector);
+
+  // destructuring the order from orderSelector
+  const {order} = useSelector(orderSelector)
 
   // creating user Authorised state
   const [userAuth] = useAuthState(auth);
@@ -35,12 +38,11 @@ export default function Order() {
       navigate("/signin");
       return;
     }
-
     const getAllOrders = async () => {
       const docRef = doc(db, "users", user);
       const docSnap = await getDoc(docRef);
       const orders = docSnap.data().order;
-      setOrder(orders);
+      dispatch(getAllOrder(orders));
 
     }
     getAllOrders();
@@ -90,7 +92,7 @@ export default function Order() {
                 )}
               </tbody>
             </table>
-            <div className="total">
+            <div  className="total">
               <h4>Total</h4>
               <p> &#8377; {getTotalPrice(orderDetail.ord_Prd)}/-</p>
             </div>
