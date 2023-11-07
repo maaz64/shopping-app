@@ -38,10 +38,10 @@ const Navbar = () => {
       <>
          <nav className="navbar">
             <div className='navbar-container'>
-               <Link to="/" className='title'>Busy Buy</Link>
+               <Link to="/shopping-app" className='title'>Busy Buy</Link>
                <ul className='nav-menu'>
                   <li className="nav-item">
-                     <Link to="/" className='nav-link'>
+                     <Link to="/shopping-app" className='nav-link'>
                         <img className="img-style" src="https://cdn-icons-png.flaticon.com/128/609/609803.png" alt="Home" />
                         <span>Home</span></Link>
                   </li>
@@ -64,7 +64,7 @@ const Navbar = () => {
                         <span>Log out</span>
                      </Link>
                         :
-                        <Link to="/signin" className='nav-link'>
+                        <Link to="signin" className='nav-link'>
                            <img className="img-style" src="https://cdn-icons-png.flaticon.com/128/3596/3596089.png" alt="Signin" />
                            <span>Sign In</span>
                         </Link>}
