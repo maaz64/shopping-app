@@ -42,7 +42,7 @@ const SignIn = () => {
 
     useEffect(() => {
         
-        if (userAuth) navigate("/");
+        if (userAuth) navigate("/shopping-app");
     }, [userAuth]);
 
     // function to handle the login of user using signInWithEmailAndPassword method proivded by the firebase 
@@ -54,7 +54,7 @@ const SignIn = () => {
                 dispatch(setUser(user.uid));
                 toast.success("Login successfully");
 
-                navigate("/")
+                navigate("/shopping-app")
             })
             .catch((error) => {
                 toast.error(error.code);
@@ -70,7 +70,7 @@ const SignIn = () => {
                     <input type="email" name="email" id="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                     <input type="password" name="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                     <button>Sign In</button>
-                    <Link className='signupLink' to='/signup'><p>Go for SignUp</p></Link>
+                    <Link className='signupLink' to='/shopping-app/signup'><p>Go for SignUp</p></Link>
                 </form>
             </div>
         </>

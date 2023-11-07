@@ -49,7 +49,7 @@ export default function Cart() {
   useEffect(() => {
 
     if (!userAuth) {
-      navigate("/signin");
+      navigate("/shopping-app/signin");
       return;
     }
 

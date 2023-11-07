@@ -35,7 +35,7 @@ export default function Order() {
   // This useEffect will fetch all orders placed by a user if the user is authorised otherwise it will redirect the user to sign in page as the component did mount
   useEffect(() => {
     if (!userAuth) {
-      navigate("/signin");
+      navigate("/shopping-app/signin");
       return;
     }
     const getAllOrders = async () => {

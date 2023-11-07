@@ -24,7 +24,7 @@ const Navbar = () => {
    // function to handle logout
    const handleLogout = () => {
       signOut(auth).then(() => {
-         navigate("/");
+         navigate("/shopping-app");
          toast.success("Logged Out!!!");
       }).catch((error) => {
          
@@ -48,12 +48,12 @@ const Navbar = () => {
                   {/* if user is authorised then we will show the cart and order page to the user */}
                   {userAuth ? <>
                      <li>
-                        <Link to='myorder' className='nav-link'>
+                        <Link to='/shopping-app/myorder' className='nav-link'>
                            <img className="img-style" src="https://cdn-icons-png.flaticon.com/128/3502/3502601.png" alt="Order" />
                            <span>My Orders</span></Link>
                      </li>
                      <li>
-                        <Link to='mycart' className='nav-link'>
+                        <Link to='/shopping-app/mycart' className='nav-link'>
                            <img className="img-style" src="https://cdn-icons-png.flaticon.com/128/726/726496.png" alt="Cart" />
                            <span>Cart</span></Link>
                      </li></> : null}
@@ -64,7 +64,7 @@ const Navbar = () => {
                         <span>Log out</span>
                      </Link>
                         :
-                        <Link to="signin" className='nav-link'>
+                        <Link to="/shopping-app/signin" className='nav-link'>
                            <img className="img-style" src="https://cdn-icons-png.flaticon.com/128/3596/3596089.png" alt="Signin" />
                            <span>Sign In</span>
                         </Link>}

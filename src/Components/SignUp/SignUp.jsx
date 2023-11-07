@@ -34,7 +34,7 @@ const SignUp = ()=>{
 
     useEffect(() => {
         
-        if (userAuth) navigate("/");
+        if (userAuth) navigate("/shopping-app");
     }, [userAuth]);
     
     // function to handle the signup of user using createUserWithEmailAndPassword method proivded by the firebase  
@@ -43,7 +43,7 @@ const SignUp = ()=>{
           e.preventDefault()
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
           const user = userCredential.user;
-          navigate('/signin');
+          navigate('/shopping-app/signin');
           toast.success("Sign Up Successfull");
         //   console.log(user.uid);
           

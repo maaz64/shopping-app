@@ -2,7 +2,7 @@
   "homepage": "https://maaz64.github.io/shopping-app",
   "name": "buy-busy",
   "version": "0.1.0",
-  "private": false,
+  "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.7",
     "@testing-library/jest-dom": "^5.17.0",
