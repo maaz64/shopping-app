@@ -27,7 +27,7 @@ function App() {
 
   // creating routes for app
   const routes = createRoutesFromElements(
-    <Route path="/" element={<Navbar/>}>
+    <Route path="/shopping-app" element={<Navbar/>}>
       <Route index element={<Home/>}/>
       <Route path='signin' element={<SignIn/>}/>
       <Route path='signup' element={<SignUp/>}/>
